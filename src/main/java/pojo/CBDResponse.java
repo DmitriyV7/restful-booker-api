@@ -1,11 +1,13 @@
 package pojo;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class BookingDetailsResponse {
+public class CBDResponse {
     private String firstname;
     private String lastname;
     private int totalprice;
