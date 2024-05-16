@@ -14,10 +14,3 @@ public class BookingDetailsResponse {
     private String additionalneeds;
 
 }
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public static class   BookingDates {
-    private String checkin;
-    private String checkout;
-}

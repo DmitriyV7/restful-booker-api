@@ -40,7 +40,8 @@ public class RestfulBookerTests {
         Assert.assertEquals("Smith",bookingObj.getLastname());
         Assert.assertEquals(111,bookingObj.getTotalprice());
         Assert.assertEquals(true,bookingObj.isDepositpaid());
-        Assert.assertEquals("BookingDates(checkin=2018-01-01, checkout=2019-01-01)",bookingObj.getBookingdates());
+        Assert.assertEquals("2018-01-01",bookingObj.getBookingdates().getCheckin());
+        Assert.assertEquals("2019-01-01",bookingObj.getBookingdates().getCheckout());
         Assert.assertEquals("Breakfast", bookingObj.getAdditionalneeds());
     }
 
