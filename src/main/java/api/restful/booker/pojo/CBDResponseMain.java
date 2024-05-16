@@ -1,4 +1,4 @@
-package pojo;
+package api.restful.booker.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

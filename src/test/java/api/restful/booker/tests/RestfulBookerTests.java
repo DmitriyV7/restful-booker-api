@@ -2,7 +2,7 @@ package api.restful.booker.tests;
 
 import static io.restassured.RestAssured.given;
 
-import pojo.*;
+import api.restful.booker.pojo.*;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
@@ -67,13 +67,13 @@ public class RestfulBookerTests {
         BookingDetailsResponse bookingObj = response.as(BookingDetailsResponse.class);
         System.out.println(bookingObj);
 
-        Assert.assertEquals("John", bookingObj.getFirstname());
-        Assert.assertEquals("Smith",bookingObj.getLastname());
+        Assert.assertEquals("Josh", bookingObj.getFirstname());
+        Assert.assertEquals("Allen",bookingObj.getLastname());
         Assert.assertEquals(111,bookingObj.getTotalprice());
         Assert.assertEquals(true,bookingObj.isDepositpaid());
         Assert.assertEquals("2018-01-01",bookingObj.getBookingdates().getCheckin());
         Assert.assertEquals("2019-01-01",bookingObj.getBookingdates().getCheckout());
-        Assert.assertEquals("Breakfast", bookingObj.getAdditionalneeds());
+        Assert.assertEquals("super bowls", bookingObj.getAdditionalneeds());
     }
 
     @Test
@@ -261,7 +261,7 @@ public class RestfulBookerTests {
                 .when()
                 .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
                 .cookie("token","token=f37095bc3c1b793")
-                .delete(BASE_URL + "/booking/15")
+                .delete(BASE_URL + "/booking/20")
                 .then()
                 .statusCode(201);
     }

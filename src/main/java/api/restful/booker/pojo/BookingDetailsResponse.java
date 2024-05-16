@@ -1,13 +1,11 @@
-package pojo;
+package api.restful.booker.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class CBDResponse {
+public class BookingDetailsResponse {
     private String firstname;
     private String lastname;
     private int totalprice;
