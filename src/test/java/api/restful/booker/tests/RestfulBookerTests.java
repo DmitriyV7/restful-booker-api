@@ -17,12 +17,10 @@ import org.junit.Test;
 import java.util.List;
 
 public class RestfulBookerTests {
-//    private static final String BASE_URL = "https://restful-booker.herokuapp.com";
     @BeforeClass
     public static void setUp(){
         RestAssured.baseURI = BASE_URL;
     }
-
 
     @Test
     public void postCreateTokenTest(){
@@ -48,18 +46,18 @@ public class RestfulBookerTests {
 
     @Test
     public void getBookingWithIdNumberTest(){
-        Response response = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_BOOKING_ENDPOINT,"numberId","25",false);
+        Response response = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,"25",false);
 
         BookingDetailsResponse bookingObj = response.as(BookingDetailsResponse.class);
         System.out.println(bookingObj);
 
-        Assert.assertEquals("Josh", bookingObj.getFirstname());
-        Assert.assertEquals("Allen",bookingObj.getLastname());
-        Assert.assertEquals(111,bookingObj.getTotalprice());
+        Assert.assertEquals("David", bookingObj.getFirstname());
+        Assert.assertEquals("White",bookingObj.getLastname());
+        Assert.assertEquals(348,bookingObj.getTotalprice());
         Assert.assertEquals(true,bookingObj.isDepositpaid());
         Assert.assertEquals("2018-01-01",bookingObj.getBookingdates().getCheckin());
         Assert.assertEquals("2019-01-01",bookingObj.getBookingdates().getCheckout());
-        Assert.assertEquals("super bowls", bookingObj.getAdditionalneeds());
+        Assert.assertEquals("Always to eat", bookingObj.getAdditionalneeds());
     }
 
     @Test
@@ -115,10 +113,16 @@ public class RestfulBookerTests {
         System.out.println(responseObj.getBookingid());
         String numberId = String.valueOf(responseObj.getBookingid());
 
-        Response response1 = performGetRequestBookingId((BASE_URL+"/booking/"+numberId),true);
+        Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,numberId,true);
         BookingDetailsResponse bookingObj = response1.as(BookingDetailsResponse.class);
         System.out.println(bookingObj);
-        extracted(bookingObj);
+        Assert.assertEquals("Kate", bookingObj.getFirstname());
+        Assert.assertEquals("White", bookingObj.getLastname());
+        Assert.assertEquals(348, bookingObj.getTotalprice());
+        Assert.assertEquals(true, bookingObj.isDepositpaid());
+        Assert.assertEquals("2018-01-01", bookingObj.getBookingdates().getCheckin());
+        Assert.assertEquals("2019-01-01", bookingObj.getBookingdates().getCheckout());
+        Assert.assertEquals("Always to eat", bookingObj.getAdditionalneeds());
     }
 
     private static void extracted(CBDResponseMain responseObj) {
@@ -134,7 +138,7 @@ public class RestfulBookerTests {
 
     @Test
     public void putUpdateBookingTest(){
-        String firstname = "Kate";
+        String firstname = "David";
         String lastname = "White";
         int totalprice = 348;
         boolean depositpaid = true;
@@ -145,38 +149,19 @@ public class RestfulBookerTests {
         BookingDates bookingDates = new BookingDates(checkin, checkout);
         CBDResponse booking = new CBDResponse(firstname, lastname, totalprice, depositpaid, bookingDates, additionalneeds);
 
-        Response response = given()
-                .when()
-                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
-                .contentType(ContentType.JSON)
-                .body(booking)
-                .put(BASE_URL + "/booking/15")
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
+        Response response = performPutRequestUpdateBooking(PUT_UPDATE_ENDPOINT,"25",booking,true);//
         BookingDetailsResponse responseObj = response.as(BookingDetailsResponse.class);
-
         extracted(responseObj);
         System.out.println(responseObj);
 
-
-        Response response1 = given()
-                .get(BASE_URL + "/booking/15" )
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
+        Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,"25",true);
         BookingDetailsResponse bookingObj = response1.as(BookingDetailsResponse.class);
         System.out.println(bookingObj);
-
         extracted(bookingObj);
     }
 
     private static void extracted(BookingDetailsResponse bookingObj) {
-        Assert.assertEquals("Kate", bookingObj.getFirstname());
+        Assert.assertEquals("David", bookingObj.getFirstname());
         Assert.assertEquals("White", bookingObj.getLastname());
         Assert.assertEquals(348, bookingObj.getTotalprice());
         Assert.assertEquals(true, bookingObj.isDepositpaid());
@@ -187,59 +172,42 @@ public class RestfulBookerTests {
 
     @Test
     public void patchPartialUpdateBookingTest(){
+        String firstname = "David";
+        String lastname = "White";
+        int totalprice = 111;
+        boolean depositpaid = true;
+        String checkin = "2018-01-01";
+        String checkout = "2019-01-01";
+        String additionalneeds = "Breakfast";
 
-        Response response = given()
-                .when()
-                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
-                .cookie("token","token=f37095bc3c1b793")
-                .contentType(ContentType.JSON)
-                .body("{\"firstname\":\"Ali\",\"lastname\":\"Baides\",\"totalprice\":555}")
-                .patch(BASE_URL + "/booking/10")
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
+        BookingDates bookingDates = new BookingDates(checkin, checkout);
+        CBDResponse booking = new CBDResponse(firstname, lastname, totalprice, depositpaid, bookingDates, additionalneeds);
+
+        Response response = performPatchPartialRequestUpdateBooking(PATCH_UPDATE_ENDPOINT,"20",booking,true);
         BookingDetailsResponse responseObj = response.as(BookingDetailsResponse.class);
+        Assert.assertEquals("David",responseObj.getFirstname());
+        Assert.assertEquals("White",responseObj.getLastname());
+        Assert.assertEquals(111,responseObj.getTotalprice());
+        Assert.assertEquals(true,responseObj.isDepositpaid());
+        Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,"20",true);
 
-        Assert.assertEquals("Ali",responseObj.getFirstname());
-        Assert.assertEquals("Baides",responseObj.getLastname());
-        Assert.assertEquals(555,responseObj.getTotalprice());
-
-        Response response1 = given()
-                .get(BASE_URL + "/booking/10" )
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
         BookingDetailsResponse bookingObj = response1.as(BookingDetailsResponse.class);
-        Assert.assertEquals("Ali", bookingObj.getFirstname());
-        Assert.assertEquals("Baides",bookingObj.getLastname());
-        Assert.assertEquals(555,bookingObj.getTotalprice());
+        Assert.assertEquals("David", bookingObj.getFirstname());
+        Assert.assertEquals("White",bookingObj.getLastname());
+        Assert.assertEquals(111,bookingObj.getTotalprice());
+        Assert.assertEquals(true, bookingObj.isDepositpaid());
         System.out.println(bookingObj);
     }
 
     @Test
     public void deleteBookingTest(){
-
-        given()
-                .when()
-                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
-                .cookie("token","token=f37095bc3c1b793")
-                .delete(BASE_URL + "/booking/20")
-                .then()
-                .statusCode(201);
+        performDeleteBookingRequest(DELETE_BOOKING_ENDPOINT,"45",true);
     }
 
     @Test
     public void getPingHealthCheckTest(){
+    performGetPingHealthCheckRequest(GET_PING_HEALTH_CHECK_ENDPOINT, false);
 
-        given()
-                .when()
-                .get(BASE_URL + "/ping")
-                .then()
-                .statusCode(201);
     }
 }
 

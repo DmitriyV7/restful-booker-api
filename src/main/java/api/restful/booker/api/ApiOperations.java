@@ -44,7 +44,7 @@ public class ApiOperations {
                 .extract()
                 .response();
     }
-    public static Response performGetRequestBookingWithPathParam(String endpoint,String paramKey,String paramValue, boolean requiresAuth){
+    public static Response performGetRequestBookingWithPathParam(String endpoint,String paramValue, boolean requiresAuth){
         RequestSpecification requestSpecification = given()
                 .contentType(ContentType.JSON);
         if (requiresAuth){
@@ -52,7 +52,7 @@ public class ApiOperations {
             requestSpecification = requestSpecification.body(authPayload);
         }
         return requestSpecification
-                .pathParams(paramKey,paramValue)
+                .pathParams("id",paramValue)
                 .when()
                 .get(endpoint)
                 .then()
@@ -79,5 +79,83 @@ public class ApiOperations {
                 .response();
     }
 
+    public static Response performPutRequestUpdateBooking(String endpoint,String paramValue, CBDResponse booking,boolean requiresAuth){
+        RequestSpecification requestSpecification = given()
+                .contentType(ContentType.JSON);
+        if (requiresAuth){
+            String authPayload = "{\"username\":\"admin\", \"password\":\"password123\"}";
+            requestSpecification = requestSpecification.body(authPayload);
+        }
+        requestSpecification = requestSpecification.body(booking);
+        return requestSpecification
+                .pathParam("id",paramValue)
+                .body(booking)
+                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
+                .when()
+                .put(endpoint)
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+    }
 
+    public static Response performPatchPartialRequestUpdateBooking(String endpoint,String ParamValue,CBDResponse booking,boolean requiresAuth){
+        RequestSpecification requestSpecification = given()
+                .contentType(ContentType.JSON);
+        if (requiresAuth){
+            String authPayload = "{\"username\":\"admin\", \"password\":\"password123\"}";
+            requestSpecification = requestSpecification.body(authPayload);
+        }
+        requestSpecification = requestSpecification.body(booking);
+        return requestSpecification
+                .pathParam("id",ParamValue)
+                .cookie("token","token=f37095bc3c1b793")
+                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
+                .body(booking)
+                .when()
+                .patch(endpoint)
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+    }
+
+    public static Response performDeleteBookingRequest(String endpoint,String ParamValue, boolean requiresAuth){
+        RequestSpecification requestSpecification = given()
+                .contentType(ContentType.JSON);
+        if (requiresAuth){
+            String authPayload = "{\"username\":\"admin\", \"password\":\"password123\"}";
+            requestSpecification = requestSpecification.body(authPayload);
+        }
+        ;
+        return requestSpecification
+                .pathParam("id",ParamValue)
+                .cookie("token","token=f37095bc3c1b793")
+                .header("Authorization","Basic YWRtaW46cGFzc3dvcmQxMjM=")
+                .when()
+                .delete(endpoint)
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+    }
+
+    public static Response performGetPingHealthCheckRequest(String endpoint, boolean requiresAuth){
+        RequestSpecification requestSpecification = given()
+                .contentType(ContentType.JSON);
+        if (requiresAuth){
+            String authPayload = "{\"username\":\"admin\", \"password\":\"password123\"}";
+            requestSpecification = requestSpecification.body(authPayload);
+        }
+        ;
+        return requestSpecification
+
+                .when()
+                .get(endpoint)
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+
+    }
 }
