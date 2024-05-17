@@ -3,6 +3,7 @@ package api.restful.booker.api;
 import static io.restassured.http.ContentType.*;
 
 import api.restful.booker.pojo.CBDResponse;
+import api.restful.booker.pojo.PartialDates;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -99,7 +100,7 @@ public class ApiOperations {
                 .response();
     }
 
-    public static Response performPatchPartialRequestUpdateBooking(String endpoint,String ParamValue,CBDResponse booking,boolean requiresAuth){
+    public static Response performPatchPartialRequestUpdateBooking(String endpoint, String ParamValue, PartialDates booking, boolean requiresAuth){
         RequestSpecification requestSpecification = given()
                 .contentType(ContentType.JSON);
         if (requiresAuth){

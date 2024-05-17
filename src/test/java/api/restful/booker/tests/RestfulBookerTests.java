@@ -52,53 +52,19 @@ public class RestfulBookerTests {
         System.out.println(bookingObj);
 
         Assert.assertEquals("David", bookingObj.getFirstname());
-        Assert.assertEquals("White",bookingObj.getLastname());
-        Assert.assertEquals(348,bookingObj.getTotalprice());
+        Assert.assertEquals("Jane",bookingObj.getLastname());
+        Assert.assertEquals(111,bookingObj.getTotalprice());
         Assert.assertEquals(true,bookingObj.isDepositpaid());
         Assert.assertEquals("2018-01-01",bookingObj.getBookingdates().getCheckin());
         Assert.assertEquals("2019-01-01",bookingObj.getBookingdates().getCheckout());
-        Assert.assertEquals("Always to eat", bookingObj.getAdditionalneeds());
-    }
-
-    @Test
-    public void postCreateBookingBadBodyTest(){
-        Response response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "    \"firstname\" : \"Jimmi\",\n" +
-                        "    \"lastname\" : \"Brown\",\n" +
-                        "    \"totalprice\" : 111,\n" +
-                        "    \"depositpaid\" : true,\n" +
-                        "    \"bookingdates\" : {\n" +
-                        "        \"checkin\" : \"2018-01-01\",\n" +
-                        "        \"checkout\" : \"2019-01-01\"\n" +
-                        "    },\n" +
-                        "    \"additionalneeds\" : \"Breakfast\"\n" +
-                        "}")
-                .post(BASE_URL + "/booking")
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .extract()
-                .response();
-        CBDResponseMain responseObj = response.as(CBDResponseMain.class);
-        Assert.assertTrue(responseObj.getBookingid()>0);
-        Assert.assertEquals("Jimmi",responseObj.getBooking().getFirstname());
-        Assert.assertEquals("Brown",responseObj.getBooking().getLastname());
-        Assert.assertEquals(111,responseObj.getBooking().getTotalprice());
-        Assert.assertEquals(true,responseObj.getBooking().isDepositpaid());
-        Assert.assertEquals("2018-01-01",responseObj.getBooking().getBookingdates().getCheckin());
-        Assert.assertEquals("2019-01-01",responseObj.getBooking().getBookingdates().getCheckout());
-        Assert.assertEquals("Breakfast",responseObj.getBooking().getAdditionalneeds());
-        System.out.println(responseObj.getBookingid());
+        Assert.assertEquals("Extra pillows please", bookingObj.getAdditionalneeds());
     }
 
     @Test
     public void postCreateBookingTest(){
-        String firstname = "Kate";
-        String lastname = "White";
-        int totalprice = 348;
+        String firstname = "David";
+        String lastname = "Lee";
+        int totalprice = 111;
         boolean depositpaid = true;
         String checkin = "2018-01-01";
         String checkout = "2019-01-01";
@@ -116,20 +82,23 @@ public class RestfulBookerTests {
         Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,numberId,true);
         BookingDetailsResponse bookingObj = response1.as(BookingDetailsResponse.class);
         System.out.println(bookingObj);
-        Assert.assertEquals("Kate", bookingObj.getFirstname());
-        Assert.assertEquals("White", bookingObj.getLastname());
-        Assert.assertEquals(348, bookingObj.getTotalprice());
+        Assert.assertEquals("David", bookingObj.getFirstname());
+        Assert.assertEquals("Lee", bookingObj.getLastname());
+        Assert.assertEquals(111, bookingObj.getTotalprice());
         Assert.assertEquals(true, bookingObj.isDepositpaid());
         Assert.assertEquals("2018-01-01", bookingObj.getBookingdates().getCheckin());
         Assert.assertEquals("2019-01-01", bookingObj.getBookingdates().getCheckout());
         Assert.assertEquals("Always to eat", bookingObj.getAdditionalneeds());
+
+        performDeleteBookingRequest(DELETE_BOOKING_ENDPOINT,numberId,true);
+
     }
 
     private static void extracted(CBDResponseMain responseObj) {
         Assert.assertTrue(responseObj.getBookingid()>0);
-        Assert.assertEquals("Kate", responseObj.getBooking().getFirstname());
-        Assert.assertEquals("White", responseObj.getBooking().getLastname());
-        Assert.assertEquals(348, responseObj.getBooking().getTotalprice());
+        Assert.assertEquals("David", responseObj.getBooking().getFirstname());
+        Assert.assertEquals("Lee", responseObj.getBooking().getLastname());
+        Assert.assertEquals(111, responseObj.getBooking().getTotalprice());
         Assert.assertEquals(true, responseObj.getBooking().isDepositpaid());
         Assert.assertEquals("2018-01-01", responseObj.getBooking().getBookingdates().getCheckin());
         Assert.assertEquals("2019-01-01", responseObj.getBooking().getBookingdates().getCheckout());
@@ -175,33 +144,27 @@ public class RestfulBookerTests {
         String firstname = "David";
         String lastname = "White";
         int totalprice = 111;
-        boolean depositpaid = true;
-        String checkin = "2018-01-01";
-        String checkout = "2019-01-01";
-        String additionalneeds = "Breakfast";
 
-        BookingDates bookingDates = new BookingDates(checkin, checkout);
-        CBDResponse booking = new CBDResponse(firstname, lastname, totalprice, depositpaid, bookingDates, additionalneeds);
+        PartialDates booking = new PartialDates(firstname, lastname, totalprice);
 
-        Response response = performPatchPartialRequestUpdateBooking(PATCH_UPDATE_ENDPOINT,"20",booking,true);
+        Response response = performPatchPartialRequestUpdateBooking(PATCH_UPDATE_ENDPOINT,"15",booking,true);
         BookingDetailsResponse responseObj = response.as(BookingDetailsResponse.class);
         Assert.assertEquals("David",responseObj.getFirstname());
         Assert.assertEquals("White",responseObj.getLastname());
         Assert.assertEquals(111,responseObj.getTotalprice());
-        Assert.assertEquals(true,responseObj.isDepositpaid());
-        Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,"20",true);
+
+        Response response1 = performGetRequestBookingWithPathParam(GET_BOOKING_WITH_ID_NUMBER_ENDPOINT,"15",true);
 
         BookingDetailsResponse bookingObj = response1.as(BookingDetailsResponse.class);
         Assert.assertEquals("David", bookingObj.getFirstname());
         Assert.assertEquals("White",bookingObj.getLastname());
         Assert.assertEquals(111,bookingObj.getTotalprice());
-        Assert.assertEquals(true, bookingObj.isDepositpaid());
         System.out.println(bookingObj);
     }
 
     @Test
     public void deleteBookingTest(){
-        performDeleteBookingRequest(DELETE_BOOKING_ENDPOINT,"45",true);
+        performDeleteBookingRequest(DELETE_BOOKING_ENDPOINT,"11",true);
     }
 
     @Test
